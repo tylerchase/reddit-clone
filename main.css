@@ -1,0 +1,64 @@
+body {
+  padding-top: 5vw;
+}
+
+.submit-button {
+  margin-top: 1vw;
+}
+.icon{
+  padding-top: 1vw;
+  padding-right:0vw;
+  padding-left:0vw;
+  text-align: center;
+}
+
+.rating-button {
+  padding-top: 1.9vw;
+  padding-right:0vw;
+  padding-left:0vw;
+  text-align: center;
+}
+
+.rating-score {
+  padding-right:0vw;
+  padding-left:0vw;
+  text-align:center;
+}
+
+.post-author {
+  padding-right: 3vw;
+  text-align: right;
+}
+
+.post-date-comment{
+  padding-right:0.5vw;
+  padding-left: 0.5vw;
+  padding-top:0.4vw
+}
+.textbox {
+  text-overflow: ellipsis;
+}
+
+.glyphicon-arrow-up{
+  color:green;
+}
+.glyphicon-arrow-down{
+  color:red;
+}
+
+.image-box{
+  height:10vw;
+  width:10vw;
+  margin-top:2vw;
+  margin-bottom:2vw;
+}
+
+.add-post{
+  margin-left:2vw;
+}
+.posts{
+  margin-left: 4vw;
+  margin-top: 1vw;
+  margin-bottom: 1vw;
+  border: 1px solid black
+}
