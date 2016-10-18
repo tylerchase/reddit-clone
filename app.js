@@ -1,4 +1,4 @@
-var app = angular.module('myApp', [])
+var app = angular.module('myApp', ['angularMoment'])
 app.controller('MainController', function($scope, $timeout){
   $scope.view = {}
   $scope.ShowAddPost = function(){
@@ -12,7 +12,7 @@ app.controller('MainController', function($scope, $timeout){
       description: "Male lions are lazy",
       votes: 1,
       comments: [],
-      time : new Date(),
+      time : Date.now(),
       CommentVisible:false,
       AddCommentBox:false,
     },
@@ -22,8 +22,19 @@ app.controller('MainController', function($scope, $timeout){
       imageurl: "http://bit.ly/2dkTsXp",
       description: "Baby Elephants are the cutest",
       votes: 3,
+      comments: ["Elephants for President"],
+      time : Date.now(),
+      CommentVisible:false,
+      AddCommentBox:false
+    },
+    {
+      title: "Giraffes",
+      author: "IMA TALL",
+      imageurl: "http://bit.ly/2dK5w5E",
+      description: "I was that I was a little bit shorter",
+      votes: 0,
       comments: [],
-      time : new Date(),
+      time : Date.now(),
       CommentVisible:false,
       AddCommentBox:false
     }
@@ -34,7 +45,7 @@ app.controller('MainController', function($scope, $timeout){
       author : $scope.view.author,
       imageurl: $scope.view.imageurl,
       description : $scope.view.description,
-      time : new Date(),
+      time : Date.now(),
       votes : 0,
       comments : [],
       CommentVisible:false,
@@ -51,18 +62,17 @@ app.controller('MainController', function($scope, $timeout){
   }
 
 
-  $scope.MakeCommentVisable = function(){
-    $scope.CommentVisible = true;
+  $scope.MakeCommentVisable = function(post){
+    post.CommentVisible = post.CommentVisible ? false : true;
   }
-  $scope.AddComment = function(index){
-    console.log(index)
-    $scope.view.postArray[index].AddCommentBox = true
+  $scope.AddComment = function(post){
+    post.AddCommentBox = post.AddCommentBox ? false : true; 
   }
-  $scope.SubmitComment = function(post){
-    post.comments.push($scope.view.comment)
+  $scope.SubmitComment = function(post, commentForm){
+  //  console.log(commentForm)
+    console.log(commentForm.comment245.$modelValue)
+    post.comments.push(commentForm.comment245.$modelValue)
     post.CommentVisible = true
-    //$scope.view.postArray[index].comments.push($scope.view.comment)
-    console.log($scope.view.postArray)
   }
   $scope.Upvote = function(post){
     post.votes++
@@ -70,8 +80,6 @@ app.controller('MainController', function($scope, $timeout){
   $scope.Downvote = function(post) {
     post.votes--
   }
-  $scope.sort = function(click){
-    
-  }
+
 
 })

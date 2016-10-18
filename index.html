@@ -2,6 +2,7 @@
 <html ng-app='myApp'>
   <head>
     <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha384-h21C2fcDk/eFsW9sC9h0dhokq5pDinLNklTKoxIZRUn3+hvmgQSffLLQ4G4l2eEr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="main.css">
     <title>Reddit Clone</title>
@@ -11,29 +12,29 @@
     <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
           <a class="navbar-brand" href="#">Reddit Clone</a>
         </div>
-
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
           <ul class="nav navbar-nav">
             <li class="active" ng-click='ShowAddPost()'><a href="#"> + Add Post <span class="sr-only">(current)</span></a></li>
           </ul>
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search" ng-model='view.searchBox'>
+              <input type="text" class="form-control" placeholder="Search" ng-model='view.search'>
             </div>
-            <select ng-model='view.select'class="form-control" id="select">
-             <option selected disabled>Sort By</option>
-             <option value='rating' ng-click='sortBy(rating)'>Rating</option>
-             <option value='date' ng-click='sortBy(date)'>Date</option>
-           </select>
           </form>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sort by {{view.sort}}<span class="caret"></span></a>
+                 <ul class="dropdown-menu" role="menu" ng-model="view.sort" ng-init="view.sort='votes' ; order_by=true">
+                   <li ng-click="view.sort='votes' ; order_by=true"><a>Sort by votes</a></li>
+                   <li ng-click="view.sort='date' ; order_by=true"><a>Sort by date</a></li>
+                   <li ng-click="view.sort='title' ; order_by=false"><a>Sort by title</a></li>
+                 </ul>
+               </li>
+             </ul>
+           </div>
         </div>
       </div>
     </nav>
@@ -76,7 +77,8 @@
       <!--End Hidden AddPost Div -->
 
       <!--  Posts should make a new post on every submit to add post-->
-    <div class='col-xs-10 posts' ng-repeat="(index,post) in view.postArray | filter: view.searchBox | orderBy:'view.select'">
+      <!-- can just use post -->
+    <div class='col-xs-10 posts' ng-repeat="post in view.postArray | filter: view.search | orderBy: view.sort: order_by">
       <div class='col-xs-3 '>
         <img ng-src='{{post.imageurl}}' class='image-box'alt='user added image'></img>
       </div>
@@ -110,29 +112,38 @@
             <span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>
           </div>
           <div class='col-xs-2 post-date-comment'>
-            <h6>{{post.time | date:'medium'}}</h6>
+            <h6> {{post.time | amCalendar }} </h6>
           </div>
+
           <div class="col-xs-1 icon">
-            <span class="glyphicon glyphicon-comment " aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
           </div>
           <div class='col-xs-2 post-date-comment'>
-            <h5># of comments</h5>
+            <button ng-click='MakeCommentVisable(post)'>
+              <h5>{{post.comments.length}}
+                <ng-pluralize count="post.comments.length"
+                   when="{
+                       '1': 'comment',
+                       'other': 'comments'}">
+                </ng-pluralize>
+              </h5>
+            </button>
           </div>
           <div class='col-xs-1 icon'>
             <span class="glyphicon glyphicon-pencil " aria-hidden="true"></span>
           </div>
           <div class='col-xs-2 post-date-comment'>
-            <button ng-click="AddComment(index)"> Add comment</button>
+            <button ng-click="AddComment(post)"> Add comment</button>
           </div>
         </div>
       </div>
       <!--comments -->
       <div ng-show="post.AddCommentBox">
-        <form>
+        <form name='commentForm'>
           <label for='userComment'> Enter Your Comment </label>
           <div>
-            <input type='text' class='col-xs-5' ng-model='view.comment' maxlength="160" value='BLAH' required>
-            <button ng-click='SubmitComment(post, index)' type='submit'>Submit</button>
+            <input name='comment245' type='text' class='col-xs-5' ng-model='addComment.comment' maxlength="160" required>
+            <button ng-click='SubmitComment(post, commentForm)'  type='submit'>Submit</button>
           </div>
         </form>
       </div>
@@ -146,8 +157,16 @@
 
 
       <!-- End of Posts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+
+    <!-- angular moment -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0/angular-moment.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
